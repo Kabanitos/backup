@@ -1,0 +1,25 @@
+---
+- name: Create user
+  ansible.builtin.user:
+  name: borg
+  home: /home/borg
+  shell: /bin/bash
+
+- name: Create path /var/backup
+  ansible.builtin.file:
+    path: /var/backup
+    state: directory
+    owner: borg
+    group: borg
+
+- name: 
+- name: Copy file /etc/sysconfig/watchlog 
+  ansible.posix.mount:
+    path: /
+    src: watchlog
+    dest: /etc/sysconfig/watchlog
+    owner: root
+    group: root
+    mode: 0755
+
+
