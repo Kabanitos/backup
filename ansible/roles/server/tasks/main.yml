@@ -4,7 +4,7 @@
     name: borg
     home: /home/borg
     shell: /bin/bash
-
+   
 - name: Create path /var/backup
   ansible.builtin.file:
     path: /var/backup
@@ -17,19 +17,42 @@
     device: /dev/sdb
     number: 1
     state: present
-    part_end: 2GiB
+    part_end: "100%"
 
 - name: Create a ext4 filesystem on /dev/sdb1
   community.general.filesystem:
-    fstype: ext2
+    fstype: ext4
     dev: /dev/sdb1
 
 - name: Check UUID /dev/sdb1
-  command: blkid /dev/sdb1 | sed 's/[^"]*"\([^"]*\).*/\1/'
+  shell: blkid /dev/sdb1 | sed 's/[^"]*"\([^"]*\).*/\1/'
+  register: uuid_sdb1
+- debug:
+    msg: '{{ uuid_sdb1 }}'
 
 - name: Mount device in /var/backup
   ansible.posix.mount:
     path: /var/backup
-    src: 
+    src: UUID='{{uuid_sdb1}}'
+    fstype: ext4
+    opts: defaults
+    state: mounted
+
+- name: Create path /home/borg/.ssh
+  ansible.builtin.file:
+    path: /home/borg/.ssh
+    state: directory
+    owner: borg
+    group: borg
+    mode: 700
+
+- name: Create file /home/borg/.ssh/authorized_keys
+  ansible.builtin.file:
+    path: /home/borg/.ssh/authorized_keys
+    state: touch
+    owner: borg
+    group: borg
+    mode: 600
+
 
 

@@ -1,6 +1,30 @@
-- hosts: systemd
+- hosts: all
   become: yes
   become_user: root
   
+  tasks:
+  - name: install package
+    ansible.builtin.yum:
+      name: epel-release
+      update_cache: true
+
+  - name: install package
+    ansible.builtin.yum:
+        name: borgbackup
+        state: latest
+        update_cache: true
+
+- hosts: server
+  become: yes
+  become_user: root
+
   roles:
-      - watchlog
+    - server
+
+
+- hosts: client
+  become: yes
+  become_user: root
+  roles:
+    - client 
+  

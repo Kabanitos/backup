@@ -7,7 +7,7 @@ Vagrant.configure(2) do |config|
             server.vm.hostname = "server"
             server.vm.network "private_network", ip: "192.168.56.160"
             server.vm.provider :virtualbox do |vb|
-                disk2 = 'disk2.vdi'
+                disk2 = 'disk2.vmdk'
                 if !File.exist?(disk2)
                         vb.customize ['createhd', '--filename', disk2, '--size', 2 * 1024]
                 end
