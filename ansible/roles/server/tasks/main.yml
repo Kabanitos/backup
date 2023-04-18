@@ -26,14 +26,14 @@
 
 - name: Check UUID /dev/sdb1
   shell: blkid /dev/sdb1 | sed 's/[^"]*"\([^"]*\).*/\1/'
-  register: uuid_sdb1
+  register: uuid
 - debug:
-    msg: '{{ uuid_sdb1 }}'
+    msg: '{{uuid.stdout}}'
 
 - name: Mount device in /var/backup
   ansible.posix.mount:
     path: /var/backup
-    src: UUID='{{uuid_sdb1}}'
+    src: UUID='{{uuid.stdout}}'
     fstype: ext4
     opts: defaults
     state: mounted
