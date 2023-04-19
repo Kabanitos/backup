@@ -46,5 +46,17 @@
     daemon_reload: true
     name: borg-backup.timer
 
+- name: Change file permissions
+  ansible.builtin.file:
+    path: /var/backup
+    owner: borg
+    group: borg
+  delegate_to: server
+
+
+
+
+
+
 
 
