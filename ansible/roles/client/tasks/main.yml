@@ -1,13 +1,13 @@
 ---
 - name: Generate ssh key
   ansible.builtin.user:
-    name: vagrant
+    name: root
     generate_ssh_key: yes
     ssh_key_bits: 2048
     ssh_key_file: .ssh/id_rsa
 
 - name: view ssh key pub
-  shell: cat /home/vagrant/.ssh/id_rsa.pub
+  shell: cat /root/.ssh/id_rsa.pub
   register: ssh_key_client
 
 - name: input ssh key client in server file
@@ -39,6 +39,7 @@
   loop:
     - borg-backup.timer
     - borg-backup.service
+
 - name: start service borg-backup.timer
   ansible.builtin.systemd:
     state: started
@@ -54,6 +55,25 @@
   delegate_to: server
 
 
+
+
+- name: Initializing the borg repository
+  ansible.builtin.shell: |
+   spawn borg init --encryption=repokey borg@192.168.56.160:/var/backup/etc
+
+    expect "Are you sure you want to continue connecting (yes/no):"
+    send "yes\n"
+
+    expect "Enter new passphrase:"
+    send "Otus1234\n"
+
+    expect "Enter same passphrase again:"
+    send "Otus1234\n"
+
+    expect "Do you want your passphrase to be displayed for verification? [yN]:"
+    send "y\n"
+  args:
+    executable: /usr/bin/expect
 
 
 

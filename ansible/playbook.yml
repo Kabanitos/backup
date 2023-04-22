@@ -10,7 +10,9 @@
 
   - name: install package
     ansible.builtin.yum:
-        name: borgbackup
+        name: 
+          - borgbackup
+          - expect
         state: latest
         update_cache: true
 
